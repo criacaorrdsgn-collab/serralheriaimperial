@@ -1,0 +1,1051 @@
+/* ==========================================================================
+   SERRALHERIA IMPERIAL — VERSÃO 2: AZUL-MARINHO IMPERIAL (#0E3E62)
+   100% Orientada pelos Tokens de Marca do Brand Analysis MD
+   ========================================================================== */
+
+:root {
+  /* Tokens Adaptados para Preto Grafite Industrial (#0A0D12) */
+  --serralheria-navy: #0A0D12;       /* Fundo dominante / solidez (#0A0D12) */
+  --serralheria-navy-dark: #10151E;  /* Tom profundo para contrastes (#10151E) */
+  --serralheria-navy-card: #151C28;  /* Superfície dos cards (#151C28) */
+  --serralheria-navy-hover: #1A2332; /* Hover suave (#1A2332) */
+  
+  --serralheria-gold: #C99137;       /* Destaque metal nobre */
+  --serralheria-gold-hover: #D9A043;
+  --serralheria-gold-glow: rgba(201, 145, 55, 0.28);
+  
+  --serralheria-cream: #E6EDF5;      /* Texto de alto contraste (#E6EDF5) */
+  --serralheria-cream-muted: #8E9BAE;/* Texto secundario (#8E9BAE) */
+  --serralheria-subtle-blue: #8E9BAE;
+  
+  --border-gold: rgba(255, 255, 255, 0.1);
+  --border-subtle: rgba(230, 237, 245, 0.1);
+  
+  --whatsapp-green: #25D366;
+  --whatsapp-glow: rgba(37, 211, 102, 0.35);
+
+  /* Tipografia do Brand Analysis (Slab Serif Condensada Bold) */
+  --font-slab: 'Roboto Slab', 'Alfa Slab One', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--serralheria-navy);
+  color: var(--serralheria-cream);
+  font-family: var(--font-body);
+  line-height: 1.65;
+  overflow-x: hidden;
+  /* Textura de aço/forja sutil com gradientes radiais em azul-marinho profundo */
+  /* Fundo sólido conforme solicitado */
+}
+
+/* Barra de Alternância de Versões (Version Switcher) */
+.version-switcher {
+  background: #06090e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  color: var(--serralheria-subtle-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+  z-index: 10000;
+}
+
+.version-pill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--serralheria-cream);
+  transition: var(--transition);
+}
+
+.version-pill:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--serralheria-gold);
+}
+
+.version-pill.active {
+  background: var(--serralheria-gold);
+  color: #08263D;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section {
+  padding: 96px 0;
+  position: relative;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 56px;
+}
+
+.badge-seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(201, 145, 55, 0.15);
+  color: var(--serralheria-cream);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 6px 18px;
+  border-radius: 30px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: var(--font-slab);
+  font-size: 2.5rem;
+  color: #FFFFFF;
+  line-height: 1.25;
+  margin-bottom: 18px;
+  letter-spacing: -0.01em;
+}
+
+.text-gold {
+  color: var(--serralheria-gold);
+}
+
+.text-cream {
+  color: var(--serralheria-cream);
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  color: var(--serralheria-subtle-blue);
+  font-weight: 400;
+}
+
+/* ==========================================================================
+   NAVBAR FIXA (COM SELO OFICIAL DA MARCA)
+   ========================================================================== */
+.navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(10, 13, 18, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: var(--transition);
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 82px;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-logo-img {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.brand-logo-img:hover {
+  transform: scale(1.05);
+}
+
+.crown-svg {
+  width: 44px;
+  height: 38px;
+  filter: drop-shadow(0 2px 8px rgba(201, 145, 55, 0.4));
+}
+
+.brand-name {
+  font-family: var(--font-slab);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  line-height: 1.15;
+}
+
+.brand-name span {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--serralheria-cream);
+  text-transform: uppercase;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  list-style: none;
+}
+
+.nav-link {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--serralheria-cream);
+  letter-spacing: 0.02em;
+}
+
+.nav-link:hover {
+  color: var(--serralheria-gold);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+}
+
+.btn-gold {
+  background: var(--serralheria-gold);
+  color: #08263D;
+  box-shadow: 0 6px 20px rgba(201, 145, 55, 0.35);
+}
+
+.btn-gold:hover {
+  background: var(--serralheria-gold-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(201, 145, 55, 0.5);
+}
+
+.btn-whatsapp {
+  background: var(--whatsapp-green);
+  color: #FFFFFF;
+  box-shadow: 0 6px 20px var(--whatsapp-glow);
+}
+
+.btn-whatsapp:hover {
+  background: #1FBE5B;
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--serralheria-cream);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-outline:hover {
+  background: rgba(201, 145, 55, 0.15);
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   HERO SECTION
+   ========================================================================== */
+.hero {
+  padding-top: 70px;
+  padding-bottom: 100px;
+  position: relative;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: 56px;
+}
+
+.hero-title {
+  font-family: var(--font-slab);
+  font-size: 3.3rem;
+  line-height: 1.18;
+  color: #FFFFFF;
+  margin-bottom: 22px;
+  letter-spacing: -0.015em;
+}
+
+.hero-description {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: var(--serralheria-cream-muted);
+  margin-bottom: 34px;
+  max-width: 570px;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.hero-trust-bar {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 28px;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trust-item i {
+  color: var(--serralheria-gold);
+  font-size: 1.4rem;
+}
+
+.trust-text strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #FFFFFF;
+}
+
+.trust-text span {
+  font-size: 0.78rem;
+  color: var(--serralheria-subtle-blue);
+}
+
+/* Card Visual Hero com Moldura Oficial do Brand Analysis */
+.hero-visual-card {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.hero-visual-img,
+.hero-visual-video {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.hero-visual-card:hover .hero-visual-img,
+.hero-visual-card:hover .hero-visual-video {
+  transform: scale(1.03);
+}
+
+.hero-badge-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: rgba(8, 38, 61, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hero-badge-info h4 {
+  font-family: var(--font-slab);
+  font-size: 1.05rem;
+  color: #FFFFFF;
+  margin-bottom: 2px;
+}
+
+.hero-badge-info p {
+  font-size: 0.82rem;
+  color: var(--serralheria-cream);
+}
+
+/* ==========================================================================
+   CARROSSEL COM MOLDURA OFICIAL DO BRAND ANALYSIS (SEÇÃO 9 E 10)
+   ========================================================================== */
+.carousel-section {
+  background: var(--serralheria-navy-dark);
+  position: relative;
+}
+
+.carousel-container {
+  overflow: hidden;
+  position: relative;
+  padding: 10px 4px 30px;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 24px;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.work-card {
+  flex: 0 0 calc(33.333% - 16px);
+  background: var(--serralheria-navy-card);
+  border: 2px solid var(--serralheria-navy);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.work-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.work-img-wrap {
+  position: relative;
+  height: 290px;
+  overflow: hidden;
+  background: #07090D;
+  /* Moldura azul-marinho recomendada no item 1 da Seção 9 do MD */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.work-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.work-card:hover .work-img {
+  transform: scale(1.06);
+}
+
+/* Selo da Coroa no Canto Superior Conforme Regra de Marca */
+.brand-seal-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(10, 13, 18, 0.88);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 4px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-transform: uppercase;
+}
+
+/* Tag de categoria dos cards do feed do Instagram */
+.work-category-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(10, 13, 18, 0.88);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* Badge "Post Recente" do Instagram */
+.insta-post-badge {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  background: rgba(11, 45, 71, 0.9); border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  z-index: 3;
+}
+
+/* Link clicavel sobre a imagem */
+.work-img-link {
+  display: block;
+  overflow: hidden;
+  height: 100%;
+}
+
+.work-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.work-title {
+  font-family: var(--font-slab);
+  font-size: 1.2rem;
+  color: #FFFFFF;
+  margin-bottom: 10px;
+  line-height: 1.35;
+}
+
+.work-desc {
+  font-size: 0.88rem;
+  color: var(--serralheria-cream-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.work-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 16px;
+}
+
+.work-cta-link {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--serralheria-gold);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.work-cta-link:hover {
+  color: #FFFFFF;
+  gap: 10px;
+}
+
+.carousel-nav-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.carousel-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--serralheria-navy-card);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--serralheria-cream);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.carousel-btn:hover {
+  background: var(--serralheria-gold);
+  color: #08263D;
+  transform: scale(1.08);
+}
+
+/* ==========================================================================
+   SERVIÇOS
+   ========================================================================== */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.service-card {
+  background: var(--serralheria-navy-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 34px 26px;
+  transition: var(--transition);
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.service-icon-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: var(--serralheria-gold, #D4AF37);
+  margin-bottom: 22px;
+}
+
+.service-title {
+  font-family: var(--font-slab);
+  font-size: 1.3rem;
+  color: #FFFFFF;
+  margin-bottom: 12px;
+}
+
+.service-text {
+  font-size: 0.9rem;
+  color: var(--serralheria-cream-muted);
+  line-height: 1.65;
+  margin-bottom: 18px;
+}
+
+.service-features li {
+  font-size: 0.84rem;
+  color: var(--serralheria-cream);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.service-features li::before {
+  content: "✔";
+  color: var(--serralheria-gold);
+  font-weight: bold;
+}
+
+/* ==========================================================================
+   DEPOIMENTOS & CALCULADORA
+   ========================================================================== */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+.testimonial-card {
+  background: var(--serralheria-navy-card);
+  border: 1px solid var(--border-subtle);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.testimonial-stars {
+  color: var(--serralheria-gold);
+  margin-bottom: 14px;
+  font-size: 1.1rem;
+}
+
+.testimonial-quote {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #FFFFFF;
+  font-style: italic;
+  margin-bottom: 18px;
+}
+
+.author-info strong {
+  display: block;
+  font-size: 0.92rem;
+  color: var(--serralheria-cream);
+}
+
+.author-info span {
+  font-size: 0.78rem;
+  color: var(--serralheria-subtle-blue);
+}
+
+.budget-calculator-card {
+  background: var(--serralheria-navy-dark);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 22px;
+  padding: 48px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin-top: 32px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--serralheria-cream);
+}
+
+.form-select, .form-input {
+  background: var(--serralheria-navy);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+}
+
+.form-select:focus, .form-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 15px var(--serralheria-gold-glow);
+}
+
+.calc-action-box {
+  grid-column: span 2;
+  text-align: center;
+  margin-top: 14px;
+}
+
+/* ==========================================================================
+   LOCALIZAÇÃO E FOOTER
+   ========================================================================== */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.contact-info-card {
+  background: var(--serralheria-navy-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 38px;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.info-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(201, 145, 55, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--serralheria-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.map-wrapper {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  min-height: 380px;
+}
+
+.map-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.footer {
+  background: #07090D;
+  border-top: 1px solid var(--border-subtle);
+  padding: 60px 0 30px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand p {
+  color: var(--serralheria-subtle-blue);
+  font-size: 0.92rem;
+  max-width: 360px;
+  margin-top: 14px;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--serralheria-subtle-blue);
+}
+
+.floating-whatsapp {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
+  width: 62px;
+  height: 62px;
+  background: var(--whatsapp-green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 2rem;
+  box-shadow: 0 10px 30px var(--whatsapp-glow);
+  transition: var(--transition);
+}
+
+.floating-whatsapp:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .work-card { flex: 0 0 calc(50% - 12px); }
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .contact-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav-menu { display: none; }
+  .hero-title { font-size: 2.3rem; }
+  .work-card { flex: 0 0 85%; }
+  .services-grid, .testimonials-grid, .calc-grid { grid-template-columns: 1fr; }
+  .calc-action-box { grid-column: span 1; }
+  .budget-calculator-card { padding: 28px 20px; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+}
+
+
+/* ==========================================================================
+   CARROSSEL DE OBRAS — BOTÕES LATERAIS ESTILIZADOS
+   ========================================================================== */
+
+
+.carousel-container {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-btn-side {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #151C28;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+  z-index: 10;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.carousel-btn-side:hover {
+  background: #1A2332;
+  border-color: #FFFFFF;
+  color: #FFFFFF;
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-btn-side:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .carousel-wrapper {
+    gap: 8px;
+  }
+  .carousel-btn-side {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+}
+
+
+/* ==========================================================================
+   CARROSSEL DE OBRAS — BOTÃO NO TOPO & SETAS NAS EXTREMIDADES (ESQ / DIR)
+   ========================================================================== */
+.carousel-insta-link-top {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.carousel-container {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  padding: 10px 0 20px;
+}
+
+.carousel-btn-side {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #151C28;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+  z-index: 10;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.carousel-btn-side:hover {
+  background: #1A2332;
+  border-color: #FFFFFF;
+  color: #FFFFFF;
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-btn-side:active {
+  transform: scale(0.95);
+}
+
+/* Tamanho otimizado e compacto para cada card do carrossel */
+.work-card {
+  flex: 0 0 calc(33.333% - 16px);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.work-img-wrap {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+
+.work-body {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.work-title {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.work-desc {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 1024px) {
+  .work-card {
+    flex: 0 0 calc(50% - 12px);
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-wrapper {
+    gap: 8px;
+  }
+  .carousel-btn-side {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+  .work-card {
+    flex: 0 0 85%;
+  }
+  .work-img-wrap {
+    height: 200px;
+  }
+}
