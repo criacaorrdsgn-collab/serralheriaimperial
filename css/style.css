@@ -1140,6 +1140,11 @@ a {
   transform: scale(0.95) !important;
 }
 
+/* Espaçamento compacto e padronizado entre as setas e os cards (16px, idêntico aos parágrafos) */
+.carousel-section .section-header {
+  margin-bottom: 16px !important;
+}
+
 .carousel-wrapper {
   position: relative;
   display: flex;
@@ -1147,14 +1152,14 @@ a {
   justify-content: space-between;
   gap: 16px;
   width: 100%;
-  padding: 10px 0;
+  padding: 0;
 }
 
 .carousel-container {
   flex: 1;
   overflow: hidden;
   position: relative;
-  padding: 10px 0 20px;
+  padding: 0 0 20px;
 }
 
 .carousel-btn-side {
