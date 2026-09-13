@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavbarScroll();
   initMobileMenu();
   initHeroVideoSound();
+  initWeldingGlow();
   initInstagramCarousel();
   initBudgetCalculator();
 });
@@ -266,4 +267,125 @@ function initBudgetCalculator() {
     const whatsappUrl = `https://wa.me/5514996637778?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   });
+}
+
+/* ==========================================================================
+   EFEITO DE BRILHO E FAGULHAS DE SOLDA NO FUNDO (MOUSE & SCROLL)
+   ========================================================================== */
+function initWeldingGlow() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'weldingGlowCanvas';
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  let mouseX = width / 2;
+  let mouseY = height / 2;
+  let targetX = mouseX;
+  let targetY = mouseY;
+
+  let lastScrollY = window.scrollY;
+  let scrollSpeed = 0;
+  const particles = [];
+
+  class SparkParticle {
+    constructor(x, y, speedMult = 1) {
+      this.x = x + (Math.random() - 0.5) * 24;
+      this.y = y + (Math.random() - 0.5) * 24;
+      const angle = Math.random() * Math.PI * 2;
+      const speed = (Math.random() * 3.5 + 1) * speedMult;
+      this.vx = Math.cos(angle) * speed;
+      this.vy = Math.sin(angle) * speed - Math.random() * 1.8;
+      this.size = Math.random() * 2.2 + 0.8;
+      this.life = 1.0;
+      this.decay = Math.random() * 0.035 + 0.02;
+      const colors = ['#FFF5DC', '#FFC837', '#FF9100', '#64D2FF', '#FFFFFF'];
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += 0.07;
+      this.vx *= 0.95;
+      this.life -= this.decay;
+    }
+
+    draw(context) {
+      context.save();
+      context.globalAlpha = Math.max(0, this.life);
+      context.fillStyle = this.color;
+      context.shadowColor = this.color;
+      context.shadowBlur = 6;
+      context.beginPath();
+      context.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
+      context.fill();
+      context.restore();
+    }
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    targetX = e.clientX;
+    targetY = e.clientY;
+
+    if (Math.random() < 0.3) {
+      particles.push(new SparkParticle(targetX, targetY, 0.8));
+    }
+  });
+
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+    scrollSpeed = Math.abs(currentScrollY - lastScrollY);
+    lastScrollY = currentScrollY;
+
+    const emitX = targetX;
+    const emitY = Math.min(height - 60, Math.max(60, targetY));
+
+    const count = Math.min(5, Math.floor(scrollSpeed / 3) + 1);
+    for (let i = 0; i < count; i++) {
+      particles.push(new SparkParticle(emitX, emitY, Math.min(2.5, 1 + scrollSpeed * 0.04)));
+    }
+  }, { passive: true });
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    mouseX += (targetX - mouseX) * 0.12;
+    mouseY += (targetY - mouseY) * 0.12;
+
+    const glowRadius = Math.min(340, Math.max(180, 210 + scrollSpeed * 3.5));
+    const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, glowRadius);
+
+    gradient.addColorStop(0, 'rgba(255, 215, 130, 0.18)');
+    gradient.addColorStop(0.25, 'rgba(201, 145, 55, 0.10)');
+    gradient.addColorStop(0.6, 'rgba(14, 62, 98, 0.05)');
+    gradient.addColorStop(1, 'rgba(10, 13, 18, 0)');
+
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(mouseX, mouseY, glowRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.update();
+      p.draw(ctx);
+      if (p.life <= 0) {
+        particles.splice(i, 1);
+      }
+    }
+
+    scrollSpeed *= 0.91;
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
 }

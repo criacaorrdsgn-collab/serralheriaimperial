@@ -1249,3 +1249,16 @@ a {
     height: 165px;
   }
 }
+
+/* Canvas para Efeito de Brilho de Solda e Fagulhas no Fundo */
+#weldingGlowCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: screen;
+  opacity: 0.85;
+}
