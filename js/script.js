@@ -270,7 +270,7 @@ function initBudgetCalculator() {
 }
 
 /* ==========================================================================
-   EFEITO DE LUZ DE SOLDA FLUIDO (VARIAÇÃO FORTE/FRACO SEM TRAVAMENTO)
+   EFEITO DE SOLDA ELÉTRICA REAL (INSPIRADO NA FOTO DE REFERÊNCIA)
    ========================================================================== */
 function initWeldingGlow() {
   const canvas = document.createElement('canvas');
@@ -300,26 +300,28 @@ function initWeldingGlow() {
 
   const sparks = [];
 
-  class UltraSpark {
-    constructor(x, y) {
-      this.x = x + (Math.random() - 0.5) * 40;
-      this.y = y + (Math.random() - 0.5) * 40;
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 3.5 + 1.2;
+  class DirectionalSpark {
+    constructor(x, y, isBurst = false) {
+      this.x = x + (Math.random() - 0.5) * 15;
+      this.y = y + (Math.random() - 0.5) * 15;
+      
+      const angle = (Math.random() - 0.5) * Math.PI * 1.8;
+      const speed = (Math.random() * 5.5 + 2.0) * (isBurst ? 1.4 : 1.0);
       this.vx = Math.cos(angle) * speed;
-      this.vy = Math.sin(angle) * speed - Math.random() * 1.5;
-      this.size = Math.random() * 2.2 + 1;
+      this.vy = Math.sin(angle) * speed - Math.random() * 2;
+      this.size = Math.random() * 2.4 + 1.0;
       this.life = 1.0;
-      this.decay = Math.random() * 0.05 + 0.03;
-      const colors = ['#FFFFFF', '#E6F7FF', '#99E2FF', '#33C4FF', '#B3ECFF'];
+      this.decay = Math.random() * 0.045 + 0.025;
+
+      const colors = ['#FFFFFF', '#E6FAFF', '#70DCFF', '#FFB800', '#FF6600'];
       this.color = colors[Math.floor(Math.random() * colors.length)];
     }
 
     update() {
       this.x += this.vx;
       this.y += this.vy;
-      this.vy += 0.08;
-      this.vx *= 0.94;
+      this.vy += 0.09;
+      this.vx *= 0.95;
       this.life -= this.decay;
     }
 
@@ -327,10 +329,15 @@ function initWeldingGlow() {
       if (this.life <= 0) return;
       c.save();
       c.globalAlpha = Math.max(0, this.life);
+      c.strokeStyle = this.color;
       c.fillStyle = this.color;
+      c.lineWidth = this.size * this.life;
+      c.lineCap = 'round';
+
       c.beginPath();
-      c.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
-      c.fill();
+      c.moveTo(this.x, this.y);
+      c.lineTo(this.x - this.vx * 2.8, this.y - this.vy * 2.8);
+      c.stroke();
       c.restore();
     }
   }
@@ -339,13 +346,13 @@ function initWeldingGlow() {
     const dx = e.clientX - lastMouseX;
     const dy = e.clientY - lastMouseY;
     const dist = Math.hypot(dx, dy);
-    motionEnergy += Math.min(dist * 0.15, 8);
+    motionEnergy += Math.min(dist * 0.18, 9);
 
     lastMouseX = targetX = e.clientX;
     lastMouseY = targetY = e.clientY;
 
-    if (Math.random() < 0.25) {
-      sparks.push(new UltraSpark(targetX, targetY));
+    if (Math.random() < 0.35) {
+      sparks.push(new DirectionalSpark(targetX, targetY));
     }
   });
 
@@ -353,7 +360,7 @@ function initWeldingGlow() {
     if (e.touches && e.touches[0]) {
       targetX = e.touches[0].clientX;
       targetY = e.touches[0].clientY;
-      motionEnergy += 4;
+      motionEnergy += 5;
     }
   }, { passive: true });
 
@@ -362,18 +369,18 @@ function initWeldingGlow() {
     const diff = Math.abs(currentScrollY - lastScrollY);
     lastScrollY = currentScrollY;
 
-    motionEnergy += Math.min(diff * 0.25, 12);
+    motionEnergy += Math.min(diff * 0.3, 14);
 
     if (targetX === width / 2 && targetY === height / 3) {
       targetX = width * (0.3 + Math.random() * 0.4);
       targetY = height * (0.3 + Math.random() * 0.4);
     }
 
-    if (Math.random() < 0.5 && sparks.length < 25) {
-      sparks.push(new UltraSpark(
-        targetX + (Math.random() - 0.5) * 60,
-        targetY + (Math.random() - 0.5) * 60
-      ));
+    const count = Math.min(3, Math.floor(diff / 4) + 1);
+    for (let i = 0; i < count; i++) {
+      if (sparks.length < 30) {
+        sparks.push(new DirectionalSpark(targetX, targetY, true));
+      }
     }
   }, { passive: true });
 
@@ -383,31 +390,49 @@ function initWeldingGlow() {
     posX += (targetX - posX) * 0.12;
     posY += (targetY - posY) * 0.12;
 
-    flickerPhase += 0.28;
+    flickerPhase += 0.32;
 
-    const rapidFlicker = (Math.sin(flickerPhase) * 0.35 + Math.cos(flickerPhase * 2.3) * 0.25 + 0.6);
+    const rapidFlicker = (Math.sin(flickerPhase) * 0.4 + Math.cos(flickerPhase * 2.7) * 0.3 + 0.65);
     const motionFactor = Math.min(1.0, motionEnergy / 10);
     
-    const currentIntensity = Math.max(0.04, motionFactor * rapidFlicker * 0.55);
-    const radius = Math.min(380, Math.max(160, 200 + motionEnergy * 8));
+    const intensity = Math.max(0.04, motionFactor * rapidFlicker * 0.60);
+    const radius = Math.min(420, Math.max(170, 210 + motionEnergy * 9));
 
     const grad = ctx.createRadialGradient(posX, posY, 0, posX, posY, radius);
 
-    // Cores de luz de solda real: Branco incandescente azulado (Arco elétrico TIG/MIG)
-    const isArcPeak = rapidFlicker > 0.75 && motionEnergy > 0.8;
-    const coreColor = isArcPeak ? `rgba(255, 255, 255, ${currentIntensity * 1.2})` : `rgba(240, 250, 255, ${currentIntensity})`;
-    const innerColor = isArcPeak ? `rgba(160, 230, 255, ${currentIntensity * 0.85})` : `rgba(120, 210, 255, ${currentIntensity * 0.65})`;
-    const outerColor = `rgba(10, 130, 230, ${currentIntensity * 0.25})`;
+    const isPeak = rapidFlicker > 0.8 && motionEnergy > 0.8;
+    const coreColor = isPeak ? `rgba(255, 255, 255, ${intensity * 1.3})` : `rgba(235, 248, 255, ${intensity})`;
+    const arcBlue = `rgba(0, 180, 255, ${intensity * 0.8})`;
+    const deepBlue = `rgba(0, 80, 210, ${intensity * 0.35})`;
+    const amberWarmth = `rgba(217, 136, 41, ${intensity * 0.15})`;
 
     grad.addColorStop(0, coreColor);
-    grad.addColorStop(0.2, innerColor);
-    grad.addColorStop(0.55, outerColor);
+    grad.addColorStop(0.18, arcBlue);
+    grad.addColorStop(0.50, deepBlue);
+    grad.addColorStop(0.80, amberWarmth);
     grad.addColorStop(1, 'rgba(10, 13, 18, 0)');
 
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(posX, posY, radius, 0, Math.PI * 2);
     ctx.fill();
+
+    if (motionEnergy > 0.5) {
+      ctx.save();
+      const rayCount = 10;
+      for (let i = 0; i < rayCount; i++) {
+        const angle = (i / rayCount) * Math.PI * 2 + (Math.sin(flickerPhase + i) * 0.2);
+        const rayLen = (radius * 0.7) * (0.6 + Math.random() * 0.5) * (intensity * 1.4);
+        
+        ctx.strokeStyle = i % 2 === 0 ? `rgba(255, 255, 255, ${intensity * 0.6})` : `rgba(80, 210, 255, ${intensity * 0.4})`;
+        ctx.lineWidth = Math.random() * 2 + 1;
+        ctx.beginPath();
+        ctx.moveTo(posX, posY);
+        ctx.lineTo(posX + Math.cos(angle) * rayLen, posY + Math.sin(angle) * rayLen);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
 
     for (let i = sparks.length - 1; i >= 0; i--) {
       const s = sparks[i];
@@ -419,7 +444,6 @@ function initWeldingGlow() {
     }
 
     motionEnergy *= 0.90;
-
     requestAnimationFrame(render);
   }
 
