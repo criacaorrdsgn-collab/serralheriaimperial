@@ -362,11 +362,13 @@ a {
   color: var(--serralheria-cream-muted);
   margin-bottom: 34px;
   max-width: 570px;
+  text-align: justify;
 }
 
 .hero-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 40px;
