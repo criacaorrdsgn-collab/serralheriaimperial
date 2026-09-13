@@ -425,6 +425,56 @@ a {
   transform: scale(1.03);
 }
 
+/* Botão de Controle de Som do Vídeo Hero */
+.sound-toggle-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 10;
+  background: rgba(10, 13, 18, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: var(--serralheria-cream);
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  outline: none;
+}
+
+.sound-toggle-btn:hover {
+  background: var(--serralheria-gold);
+  color: #08263D;
+  border-color: var(--serralheria-gold);
+  transform: scale(1.05);
+}
+
+.sound-toggle-btn .icon-audio {
+  display: none;
+}
+
+.sound-toggle-btn.unmuted {
+  background: rgba(201, 145, 55, 0.95);
+  color: #08263D;
+  border-color: var(--serralheria-gold);
+  box-shadow: 0 4px 18px rgba(201, 145, 55, 0.4);
+}
+
+.sound-toggle-btn.unmuted .icon-muted {
+  display: none;
+}
+
+.sound-toggle-btn.unmuted .icon-audio {
+  display: inline-block;
+}
+
 .hero-badge-overlay {
   position: absolute;
   bottom: 20px;

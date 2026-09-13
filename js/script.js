@@ -6,6 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initNavbarScroll();
   initMobileMenu();
+  initHeroVideoSound();
   initInstagramCarousel();
   initBudgetCalculator();
 });
@@ -75,6 +76,45 @@ function initMobileMenu() {
       closeMenu();
     }
   });
+}
+
+/* ==========================================================================
+   CONTROLE DE ÁUDIO DO VÍDEO HERO
+   ========================================================================== */
+function initHeroVideoSound() {
+  const video = document.getElementById('heroVideo');
+  const soundBtn = document.getElementById('heroSoundToggle');
+  if (!video || !soundBtn) return;
+
+  function toggleSound() {
+    video.muted = !video.muted;
+    const soundText = soundBtn.querySelector('.sound-text');
+    if (video.muted) {
+      soundBtn.classList.remove('unmuted');
+      soundBtn.setAttribute('aria-label', 'Ativar som do vídeo');
+      if (soundText) soundText.textContent = 'Som';
+    } else {
+      soundBtn.classList.add('unmuted');
+      soundBtn.setAttribute('aria-label', 'Desativar som do vídeo');
+      if (soundText) soundText.textContent = 'Som Ativo';
+      video.play().catch(() => {});
+    }
+  }
+
+  soundBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleSound();
+  });
+
+  const videoCard = video.closest('.hero-visual-card');
+  if (videoCard) {
+    videoCard.style.cursor = 'pointer';
+    videoCard.addEventListener('click', (e) => {
+      if (!e.target.closest('.sound-toggle-btn') && !e.target.closest('.hero-badge-overlay')) {
+        toggleSound();
+      }
+    });
+  }
 }
 
 /* ==========================================================================
