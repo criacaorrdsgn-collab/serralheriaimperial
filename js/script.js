@@ -270,14 +270,14 @@ function initBudgetCalculator() {
 }
 
 /* ==========================================================================
-   EFEITO DE BRILHO E LUZES DE SOLDA DISCRETAS NO FUNDO (MOUSE & SCROLL)
+   EFEITO DE LUZ DE SOLDA FLUIDO (VARIAÇÃO FORTE/FRACO SEM TRAVAMENTO)
    ========================================================================== */
 function initWeldingGlow() {
   const canvas = document.createElement('canvas');
   canvas.id = 'weldingGlowCanvas';
   document.body.appendChild(canvas);
 
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { alpha: true });
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
@@ -286,167 +286,142 @@ function initWeldingGlow() {
     height = canvas.height = window.innerHeight;
   });
 
-  let mouseX = width / 2;
-  let mouseY = height / 3;
-  let targetX = mouseX;
-  let targetY = mouseY;
-  let hasUserMovedMouse = false;
+  let posX = width / 2;
+  let posY = height / 3;
+  let targetX = posX;
+  let targetY = posY;
 
   let lastScrollY = window.scrollY;
-  let scrollSpeed = 0;
+  let lastMouseX = posX;
+  let lastMouseY = posY;
 
-  const particles = [];
-  const arcFlashes = [];
+  let motionEnergy = 0;
+  let flickerPhase = 0;
 
-  // Classe para Fagulhas de Solda (Sparks)
-  class SparkParticle {
-    constructor(x, y, speedMult = 1) {
-      this.x = x + (Math.random() - 0.5) * 30;
-      this.y = y + (Math.random() - 0.5) * 30;
+  const sparks = [];
+
+  class UltraSpark {
+    constructor(x, y) {
+      this.x = x + (Math.random() - 0.5) * 40;
+      this.y = y + (Math.random() - 0.5) * 40;
       const angle = Math.random() * Math.PI * 2;
-      const speed = (Math.random() * 3 + 1) * speedMult;
+      const speed = Math.random() * 3.5 + 1.2;
       this.vx = Math.cos(angle) * speed;
       this.vy = Math.sin(angle) * speed - Math.random() * 1.5;
-      this.size = Math.random() * 2 + 0.8;
+      this.size = Math.random() * 2.2 + 1;
       this.life = 1.0;
-      this.decay = Math.random() * 0.04 + 0.025;
-      const colors = ['#FFFFFF', '#FFF3D1', '#FFC947', '#50CAFF', '#FFA024'];
+      this.decay = Math.random() * 0.05 + 0.03;
+      const colors = ['#FFFFFF', '#E6F7FF', '#99E2FF', '#33C4FF', '#B3ECFF'];
       this.color = colors[Math.floor(Math.random() * colors.length)];
     }
 
     update() {
       this.x += this.vx;
       this.y += this.vy;
-      this.vy += 0.06;
+      this.vy += 0.08;
       this.vx *= 0.94;
       this.life -= this.decay;
     }
 
-    draw(context) {
-      context.save();
-      context.globalAlpha = Math.max(0, this.life);
-      context.fillStyle = this.color;
-      context.shadowColor = this.color;
-      context.shadowBlur = 6;
-      context.beginPath();
-      context.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
-      context.fill();
-      context.restore();
+    draw(c) {
+      if (this.life <= 0) return;
+      c.save();
+      c.globalAlpha = Math.max(0, this.life);
+      c.fillStyle = this.color;
+      c.beginPath();
+      c.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
+      c.fill();
+      c.restore();
     }
   }
 
-  // Classe para Luzes/Flashes de Arco de Solda Discretas (Arc Flashes)
-  class ArcFlash {
-    constructor(x, y) {
-      this.x = x;
-      this.y = y;
-      this.radius = Math.random() * 90 + 110;
-      this.life = 1.0;
-      this.decay = Math.random() * 0.06 + 0.04;
-      this.flicker = Math.random() * 0.4 + 0.8;
-      this.colorHue = Math.random() > 0.4 ? 'rgba(80, 202, 255, ' : 'rgba(255, 201, 71, ';
-    }
-
-    update() {
-      this.life -= this.decay;
-      this.flicker = Math.random() * 0.3 + 0.85;
-    }
-
-    draw(context) {
-      context.save();
-      const alpha = Math.max(0, this.life * 0.18 * this.flicker);
-      const grad = context.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-      grad.addColorStop(0, this.colorHue + (alpha * 1.2) + ')');
-      grad.addColorStop(0.3, 'rgba(255, 235, 180, ' + (alpha * 0.6) + ')');
-      grad.addColorStop(0.7, 'rgba(14, 62, 98, ' + (alpha * 0.2) + ')');
-      grad.addColorStop(1, 'rgba(10, 13, 18, 0)');
-
-      context.fillStyle = grad;
-      context.beginPath();
-      context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      context.fill();
-      context.restore();
-    }
-  }
-
-  // Evento de movimento do mouse (Computador)
   window.addEventListener('mousemove', (e) => {
-    hasUserMovedMouse = true;
-    targetX = e.clientX;
-    targetY = e.clientY;
+    const dx = e.clientX - lastMouseX;
+    const dy = e.clientY - lastMouseY;
+    const dist = Math.hypot(dx, dy);
+    motionEnergy += Math.min(dist * 0.15, 8);
+
+    lastMouseX = targetX = e.clientX;
+    lastMouseY = targetY = e.clientY;
 
     if (Math.random() < 0.25) {
-      particles.push(new SparkParticle(targetX, targetY, 0.7));
+      sparks.push(new UltraSpark(targetX, targetY));
     }
   });
 
-  // Evento de Scroll (Computador e Celular)
-  window.addEventListener('scroll', () => {
-    const currentScrollY = window.scrollY;
-    scrollSpeed = Math.abs(currentScrollY - lastScrollY);
-    lastScrollY = currentScrollY;
-
-    if (scrollSpeed > 2) {
-      let spawnX = hasUserMovedMouse ? targetX : (width * (0.2 + Math.random() * 0.6));
-      let spawnY = hasUserMovedMouse ? targetY : (height * (0.25 + Math.random() * 0.5));
-
-      if (Math.random() < 0.65) {
-        arcFlashes.push(new ArcFlash(
-          spawnX + (Math.random() - 0.5) * 80,
-          spawnY + (Math.random() - 0.5) * 80
-        ));
-      }
-
-      const particleCount = Math.min(4, Math.floor(scrollSpeed / 4) + 1);
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new SparkParticle(spawnX, spawnY, Math.min(2.2, 1 + scrollSpeed * 0.03)));
-      }
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches[0]) {
+      targetX = e.touches[0].clientX;
+      targetY = e.touches[0].clientY;
+      motionEnergy += 4;
     }
   }, { passive: true });
 
-  // Loop de Animação (60fps)
-  function animate() {
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+    const diff = Math.abs(currentScrollY - lastScrollY);
+    lastScrollY = currentScrollY;
+
+    motionEnergy += Math.min(diff * 0.25, 12);
+
+    if (targetX === width / 2 && targetY === height / 3) {
+      targetX = width * (0.3 + Math.random() * 0.4);
+      targetY = height * (0.3 + Math.random() * 0.4);
+    }
+
+    if (Math.random() < 0.5 && sparks.length < 25) {
+      sparks.push(new UltraSpark(
+        targetX + (Math.random() - 0.5) * 60,
+        targetY + (Math.random() - 0.5) * 60
+      ));
+    }
+  }, { passive: true });
+
+  function render() {
     ctx.clearRect(0, 0, width, height);
 
-    mouseX += (targetX - mouseX) * 0.12;
-    mouseY += (targetY - mouseY) * 0.12;
+    posX += (targetX - posX) * 0.12;
+    posY += (targetY - posY) * 0.12;
 
-    const baseRadius = hasUserMovedMouse ? 240 : 200;
-    const glowRadius = Math.min(320, Math.max(160, baseRadius + scrollSpeed * 2.5));
-    const ambientGrad = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, glowRadius);
+    flickerPhase += 0.28;
 
-    const baseAlpha = hasUserMovedMouse ? 0.14 : 0.08;
-    ambientGrad.addColorStop(0, `rgba(255, 215, 130, ${baseAlpha + Math.min(0.08, scrollSpeed * 0.003)})`);
-    ambientGrad.addColorStop(0.3, `rgba(201, 145, 55, ${(baseAlpha * 0.6)})`);
-    ambientGrad.addColorStop(0.7, 'rgba(14, 62, 98, 0.03)');
-    ambientGrad.addColorStop(1, 'rgba(10, 13, 18, 0)');
+    const rapidFlicker = (Math.sin(flickerPhase) * 0.35 + Math.cos(flickerPhase * 2.3) * 0.25 + 0.6);
+    const motionFactor = Math.min(1.0, motionEnergy / 10);
+    
+    const currentIntensity = Math.max(0.04, motionFactor * rapidFlicker * 0.55);
+    const radius = Math.min(380, Math.max(160, 200 + motionEnergy * 8));
 
-    ctx.fillStyle = ambientGrad;
+    const grad = ctx.createRadialGradient(posX, posY, 0, posX, posY, radius);
+
+    // Cores de luz de solda real: Branco incandescente azulado (Arco elétrico TIG/MIG)
+    const isArcPeak = rapidFlicker > 0.75 && motionEnergy > 0.8;
+    const coreColor = isArcPeak ? `rgba(255, 255, 255, ${currentIntensity * 1.2})` : `rgba(240, 250, 255, ${currentIntensity})`;
+    const innerColor = isArcPeak ? `rgba(160, 230, 255, ${currentIntensity * 0.85})` : `rgba(120, 210, 255, ${currentIntensity * 0.65})`;
+    const outerColor = `rgba(10, 130, 230, ${currentIntensity * 0.25})`;
+
+    grad.addColorStop(0, coreColor);
+    grad.addColorStop(0.2, innerColor);
+    grad.addColorStop(0.55, outerColor);
+    grad.addColorStop(1, 'rgba(10, 13, 18, 0)');
+
+    ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(mouseX, mouseY, glowRadius, 0, Math.PI * 2);
+    ctx.arc(posX, posY, radius, 0, Math.PI * 2);
     ctx.fill();
 
-    for (let i = arcFlashes.length - 1; i >= 0; i--) {
-      const flash = arcFlashes[i];
-      flash.update();
-      flash.draw(ctx);
-      if (flash.life <= 0) {
-        arcFlashes.splice(i, 1);
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      s.update();
+      s.draw(ctx);
+      if (s.life <= 0) {
+        sparks.splice(i, 1);
       }
     }
 
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.update();
-      p.draw(ctx);
-      if (p.life <= 0) {
-        particles.splice(i, 1);
-      }
-    }
+    motionEnergy *= 0.90;
 
-    scrollSpeed *= 0.90;
-    requestAnimationFrame(animate);
+    requestAnimationFrame(render);
   }
 
-  animate();
+  render();
 }
