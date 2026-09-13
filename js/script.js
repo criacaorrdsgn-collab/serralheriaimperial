@@ -270,7 +270,7 @@ function initBudgetCalculator() {
 }
 
 /* ==========================================================================
-   EFEITO DE BRILHO E FAGULHAS DE SOLDA NO FUNDO (MOUSE & SCROLL)
+   EFEITO DE BRILHO E LUZES DE SOLDA DISCRETAS NO FUNDO (MOUSE & SCROLL)
    ========================================================================== */
 function initWeldingGlow() {
   const canvas = document.createElement('canvas');
@@ -287,34 +287,38 @@ function initWeldingGlow() {
   });
 
   let mouseX = width / 2;
-  let mouseY = height / 2;
+  let mouseY = height / 3;
   let targetX = mouseX;
   let targetY = mouseY;
+  let hasUserMovedMouse = false;
 
   let lastScrollY = window.scrollY;
   let scrollSpeed = 0;
-  const particles = [];
 
+  const particles = [];
+  const arcFlashes = [];
+
+  // Classe para Fagulhas de Solda (Sparks)
   class SparkParticle {
     constructor(x, y, speedMult = 1) {
-      this.x = x + (Math.random() - 0.5) * 24;
-      this.y = y + (Math.random() - 0.5) * 24;
+      this.x = x + (Math.random() - 0.5) * 30;
+      this.y = y + (Math.random() - 0.5) * 30;
       const angle = Math.random() * Math.PI * 2;
-      const speed = (Math.random() * 3.5 + 1) * speedMult;
+      const speed = (Math.random() * 3 + 1) * speedMult;
       this.vx = Math.cos(angle) * speed;
-      this.vy = Math.sin(angle) * speed - Math.random() * 1.8;
-      this.size = Math.random() * 2.2 + 0.8;
+      this.vy = Math.sin(angle) * speed - Math.random() * 1.5;
+      this.size = Math.random() * 2 + 0.8;
       this.life = 1.0;
-      this.decay = Math.random() * 0.035 + 0.02;
-      const colors = ['#FFF5DC', '#FFC837', '#FF9100', '#64D2FF', '#FFFFFF'];
+      this.decay = Math.random() * 0.04 + 0.025;
+      const colors = ['#FFFFFF', '#FFF3D1', '#FFC947', '#50CAFF', '#FFA024'];
       this.color = colors[Math.floor(Math.random() * colors.length)];
     }
 
     update() {
       this.x += this.vx;
       this.y += this.vy;
-      this.vy += 0.07;
-      this.vx *= 0.95;
+      this.vy += 0.06;
+      this.vx *= 0.94;
       this.life -= this.decay;
     }
 
@@ -331,47 +335,105 @@ function initWeldingGlow() {
     }
   }
 
+  // Classe para Luzes/Flashes de Arco de Solda Discretas (Arc Flashes)
+  class ArcFlash {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.radius = Math.random() * 90 + 110;
+      this.life = 1.0;
+      this.decay = Math.random() * 0.06 + 0.04;
+      this.flicker = Math.random() * 0.4 + 0.8;
+      this.colorHue = Math.random() > 0.4 ? 'rgba(80, 202, 255, ' : 'rgba(255, 201, 71, ';
+    }
+
+    update() {
+      this.life -= this.decay;
+      this.flicker = Math.random() * 0.3 + 0.85;
+    }
+
+    draw(context) {
+      context.save();
+      const alpha = Math.max(0, this.life * 0.18 * this.flicker);
+      const grad = context.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+      grad.addColorStop(0, this.colorHue + (alpha * 1.2) + ')');
+      grad.addColorStop(0.3, 'rgba(255, 235, 180, ' + (alpha * 0.6) + ')');
+      grad.addColorStop(0.7, 'rgba(14, 62, 98, ' + (alpha * 0.2) + ')');
+      grad.addColorStop(1, 'rgba(10, 13, 18, 0)');
+
+      context.fillStyle = grad;
+      context.beginPath();
+      context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      context.fill();
+      context.restore();
+    }
+  }
+
+  // Evento de movimento do mouse (Computador)
   window.addEventListener('mousemove', (e) => {
+    hasUserMovedMouse = true;
     targetX = e.clientX;
     targetY = e.clientY;
 
-    if (Math.random() < 0.3) {
-      particles.push(new SparkParticle(targetX, targetY, 0.8));
+    if (Math.random() < 0.25) {
+      particles.push(new SparkParticle(targetX, targetY, 0.7));
     }
   });
 
+  // Evento de Scroll (Computador e Celular)
   window.addEventListener('scroll', () => {
     const currentScrollY = window.scrollY;
     scrollSpeed = Math.abs(currentScrollY - lastScrollY);
     lastScrollY = currentScrollY;
 
-    const emitX = targetX;
-    const emitY = Math.min(height - 60, Math.max(60, targetY));
+    if (scrollSpeed > 2) {
+      let spawnX = hasUserMovedMouse ? targetX : (width * (0.2 + Math.random() * 0.6));
+      let spawnY = hasUserMovedMouse ? targetY : (height * (0.25 + Math.random() * 0.5));
 
-    const count = Math.min(5, Math.floor(scrollSpeed / 3) + 1);
-    for (let i = 0; i < count; i++) {
-      particles.push(new SparkParticle(emitX, emitY, Math.min(2.5, 1 + scrollSpeed * 0.04)));
+      if (Math.random() < 0.65) {
+        arcFlashes.push(new ArcFlash(
+          spawnX + (Math.random() - 0.5) * 80,
+          spawnY + (Math.random() - 0.5) * 80
+        ));
+      }
+
+      const particleCount = Math.min(4, Math.floor(scrollSpeed / 4) + 1);
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new SparkParticle(spawnX, spawnY, Math.min(2.2, 1 + scrollSpeed * 0.03)));
+      }
     }
   }, { passive: true });
 
+  // Loop de Animação (60fps)
   function animate() {
     ctx.clearRect(0, 0, width, height);
 
     mouseX += (targetX - mouseX) * 0.12;
     mouseY += (targetY - mouseY) * 0.12;
 
-    const glowRadius = Math.min(340, Math.max(180, 210 + scrollSpeed * 3.5));
-    const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, glowRadius);
+    const baseRadius = hasUserMovedMouse ? 240 : 200;
+    const glowRadius = Math.min(320, Math.max(160, baseRadius + scrollSpeed * 2.5));
+    const ambientGrad = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, glowRadius);
 
-    gradient.addColorStop(0, 'rgba(255, 215, 130, 0.18)');
-    gradient.addColorStop(0.25, 'rgba(201, 145, 55, 0.10)');
-    gradient.addColorStop(0.6, 'rgba(14, 62, 98, 0.05)');
-    gradient.addColorStop(1, 'rgba(10, 13, 18, 0)');
+    const baseAlpha = hasUserMovedMouse ? 0.14 : 0.08;
+    ambientGrad.addColorStop(0, `rgba(255, 215, 130, ${baseAlpha + Math.min(0.08, scrollSpeed * 0.003)})`);
+    ambientGrad.addColorStop(0.3, `rgba(201, 145, 55, ${(baseAlpha * 0.6)})`);
+    ambientGrad.addColorStop(0.7, 'rgba(14, 62, 98, 0.03)');
+    ambientGrad.addColorStop(1, 'rgba(10, 13, 18, 0)');
 
-    ctx.fillStyle = gradient;
+    ctx.fillStyle = ambientGrad;
     ctx.beginPath();
     ctx.arc(mouseX, mouseY, glowRadius, 0, Math.PI * 2);
     ctx.fill();
+
+    for (let i = arcFlashes.length - 1; i >= 0; i--) {
+      const flash = arcFlashes[i];
+      flash.update();
+      flash.draw(ctx);
+      if (flash.life <= 0) {
+        arcFlashes.splice(i, 1);
+      }
+    }
 
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
@@ -382,8 +444,7 @@ function initWeldingGlow() {
       }
     }
 
-    scrollSpeed *= 0.91;
-
+    scrollSpeed *= 0.90;
     requestAnimationFrame(animate);
   }
 
