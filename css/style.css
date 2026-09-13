@@ -241,6 +241,48 @@ a {
   color: var(--serralheria-gold);
 }
 
+/* Botão Hambúrguer Mobile */
+.mobile-menu-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--serralheria-cream);
+  font-size: 1.5rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  outline: none;
+}
+
+.mobile-menu-toggle:hover,
+.mobile-menu-toggle:focus-visible {
+  border-color: var(--serralheria-gold);
+  color: var(--serralheria-gold);
+  background: rgba(201, 145, 55, 0.1);
+}
+
+.mobile-menu-toggle .icon-close {
+  display: none;
+}
+
+.mobile-menu-toggle.active {
+  border-color: var(--serralheria-gold);
+  color: var(--serralheria-gold);
+  background: rgba(201, 145, 55, 0.15);
+}
+
+.mobile-menu-toggle.active .icon-hamburger {
+  display: none;
+}
+
+.mobile-menu-toggle.active .icon-close {
+  display: block;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -872,7 +914,61 @@ a {
 }
 
 @media (max-width: 768px) {
-  .nav-menu { display: none; }
+  .mobile-menu-toggle {
+    display: flex;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: 82px;
+    left: 0;
+    width: 100%;
+    background: rgba(10, 13, 18, 0.98);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-gold);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 12px 24px 24px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 999;
+  }
+
+  .nav-menu.active {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .nav-menu li {
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .nav-menu li:last-child {
+    border-bottom: none;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 14px 8px;
+    font-size: 1.05rem;
+    color: #FFFFFF;
+    transition: var(--transition);
+  }
+
+  .nav-link:hover,
+  .nav-link:active {
+    color: var(--serralheria-gold);
+    padding-left: 14px;
+  }
+
   .hero-title { font-size: 2.3rem; }
   .work-card { flex: 0 0 85%; }
   .services-grid, .testimonials-grid, .calc-grid { grid-template-columns: 1fr; }

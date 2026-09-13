@@ -5,6 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavbarScroll();
+  initMobileMenu();
   initInstagramCarousel();
   initBudgetCalculator();
 });
@@ -23,6 +24,55 @@ function initNavbarScroll() {
     } else {
       navbar.style.background = 'rgba(10, 13, 18, 0.85)';
       navbar.style.boxShadow = 'none';
+    }
+  });
+}
+
+/* ==========================================================================
+   MENU HAMBÚRGUER MOBILE
+   ========================================================================== */
+function initMobileMenu() {
+  const toggleBtn = document.getElementById('mobileMenuToggle');
+  const navMenu = document.getElementById('navMenu');
+  if (!toggleBtn || !navMenu) return;
+
+  function toggleMenu() {
+    const isOpen = toggleBtn.classList.toggle('active');
+    navMenu.classList.toggle('active');
+    toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }
+
+  function closeMenu() {
+    toggleBtn.classList.remove('active');
+    navMenu.classList.remove('active');
+    toggleBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  const navLinks = navMenu.querySelectorAll('.nav-link');
+  navLinks.forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!toggleBtn.contains(e.target) && !navMenu.contains(e.target)) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeMenu();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      closeMenu();
     }
   });
 }
